@@ -1,0 +1,57 @@
+title: |-
+  GitLab status
+summary: |
+  Update commit status for GitLab repositories
+description: |
+  Update commit status for GitLab repositories
+website: https://github.com/bitrise-steplib/steps-gitlab-status
+source_code_url: https://github.com/bitrise-steplib/steps-gitlab-status
+support_url: https://github.com/bitrise-steplib/steps-gitlab-status/issues
+type_tags:
+  - utility
+is_requires_admin_user: false
+is_always_run: true
+is_skippable: false
+toolkit:
+  go:
+    package_name: github.com/bitrise-steplib/steps-gitlab-status
+inputs:
+  - api_base_url: "http://localhost/api/v4"
+    opts:
+      title: "GitHub API base url"
+      summary: ""
+      description: |-
+        API URL for GitLab or GitLab Enterprise
+      is_required: true
+  - private_token: ""
+    opts:
+      title: "GitLab private token"
+      summary: ""
+      description: |-
+        Authorization token for GitLab applications
+
+        You can create one for yourself at the following url:
+        - TODO
+      is_required: true
+  - repository_url: "$GIT_REPOSITORY_URL"
+    opts:
+      title: "Repository URL"
+      summary: ""
+      description: |-
+        The URL for the repository we are working with
+      is_required: true
+  - commit_hash: "$BITRISE_GIT_COMMIT"
+    opts:
+      title: "Commit hash"
+      summary: ""
+      description: |-
+        The commit hash for the commit we are working with
+      is_required: true
+  - preset_status: ""
+    opts:
+      title: "Set Specific Status"
+      summary: ""
+      description: |-
+        If set, this step will set a specific status instead of reporting the current build status.
+        
+        Can be one of pending, running, success, failed or canceled.

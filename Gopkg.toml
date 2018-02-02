@@ -1,0 +1,11 @@
+[[constraint]]
+  name = "github.com/bitrise-io/go-utils"
+  branch = "master"
+
+[[constraint]]
+  name = "github.com/kdobmayer/input"
+  branch = "master"
+
+[prune]
+  go-tests = true
+  unused-packages = true
