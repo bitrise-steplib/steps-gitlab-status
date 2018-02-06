@@ -16,12 +16,14 @@ toolkit:
   go:
     package_name: github.com/bitrise-steplib/steps-gitlab-status
 inputs:
-  - api_base_url: "http://localhost/api/v4"
+  - api_base_url: ""
     opts:
       title: "GitHub API base url"
       summary: ""
       description: |-
         API URL for GitLab or GitLab Enterprise
+
+        Example: "http://gitlab.example.com/api/v4"
       is_required: true
   - private_token: ""
     opts:
@@ -30,8 +32,11 @@ inputs:
       description: |-
         Authorization token for GitLab applications
 
-        You can create one for yourself at the following url:
-        - TODO
+        Generating a personal access token:
+        1. Log in to your GitLab instance
+        2. Go to User Settings > Access Tokens
+        3. Pick a _name_ and set a _scope_ for the token
+        4. Click on **Create personal access token** and save your new token
       is_required: true
   - repository_url: "$GIT_REPOSITORY_URL"
     opts:
