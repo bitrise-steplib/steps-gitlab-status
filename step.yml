@@ -23,7 +23,7 @@ inputs:
       description: |-
         API URL for GitLab or GitLab Enterprise
 
-        Example: "http://gitlab.example.com/api/v4"
+        Example: "https://gitlab.example.com/api/v4"
       is_required: true
   - private_token: ""
     opts:

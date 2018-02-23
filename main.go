@@ -8,15 +8,15 @@ import (
 	"strings"
 
 	"github.com/bitrise-io/go-utils/log"
-	"github.com/kdobmayer/input"
+	"github.com/bitrise-tools/go-steputils/stepconf"
 )
 
 // Config ...
 type Config struct {
-	APIURL        string `env:"api_base_url" validate:"required"`
-	PrivateToken  string `env:"private_token" validate:"required"`
-	RepositoryURL string `env:"repository_url" validate:"required"`
-	CommitHash    string `env:"commit_hash" validate:"required"`
+	APIURL        string `env:"api_base_url,required"`
+	PrivateToken  string `env:"private_token,required"`
+	RepositoryURL string `env:"repository_url,required"`
+	CommitHash    string `env:"commit_hash,required"`
 	PresetStatus  string `env:"preset_status"`
 }
 
@@ -28,7 +28,8 @@ type projects []struct {
 func getID(apiURL, token, repo string) (n int, err error) {
 	client := &http.Client{}
 	var req *http.Request
-	req, err = http.NewRequest("GET", apiURL+"/projects?simple=true", nil)
+	url := fmt.Sprintf("%s/projects?simple=true&membership=true&search=%s", apiURL, repo)
+	req, err = http.NewRequest("GET", url, nil)
 	if err != nil {
 		return 0, err
 	}
@@ -36,7 +37,7 @@ func getID(apiURL, token, repo string) (n int, err error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("failed to send the request: %s", err)
 	}
 	defer func() {
 		if cerr := resp.Body.Close(); err == nil {
@@ -54,21 +55,21 @@ func getID(apiURL, token, repo string) (n int, err error) {
 			return p.ID, nil
 		}
 	}
-	return 0, fmt.Errorf("id not found for repository %q", repo)
+	return 0, fmt.Errorf("id not found for repository (%s)", repo)
 }
 
 func getStatus(preset string) string {
 	if preset != "" {
 		return preset
 	}
-	if os.Getenv("STEPLIB_BUILD_STATUS") == "0" {
+	if os.Getenv("BITRISE_BUILD_STATUS") == "0" {
 		return "success"
 	}
 	return "failed"
 }
 
+// https://docs.gitlab.com/ce/api/commits.html#post-the-build-status-to-a-commit
 func sendStatus(apiURL, token, commit, state string, id int) (err error) {
-	// https://docs.gitlab.com/ce/api/commits.html#post-the-build-status-to-a-commit
 	client := &http.Client{}
 	url := fmt.Sprintf("%s/projects/%d/statuses/%s?state=%s", apiURL, id, commit, state)
 	var req *http.Request
@@ -77,35 +78,39 @@ func sendStatus(apiURL, token, commit, state string, id int) (err error) {
 		return err
 	}
 	req.Header.Add("PRIVATE-TOKEN", token)
+
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to send the request: %s", err)
 	}
 	defer func() {
 		if cerr := resp.Body.Close(); err == nil {
 			err = cerr
 		}
 	}()
+
 	return err
 }
 
 func main() {
-	var c Config
-	if err := input.New(&c); err != nil {
-		log.Errorf("Couldn't create config: %v\n", err)
+	var conf Config
+	if err := stepconf.Parse(&conf); err != nil {
+		log.Errorf("Error: %s\n", err)
 		os.Exit(1)
 	}
-	input.Print(c)
+	stepconf.Print(conf)
 
-	lastSlash, lastDot := strings.LastIndex(c.RepositoryURL, "/"), strings.LastIndex(c.RepositoryURL, ".")
-	repoName := c.RepositoryURL[lastSlash+1 : lastDot]
-	id, err := getID(c.APIURL, c.PrivateToken, repoName)
+	lastSlash := strings.LastIndex(conf.RepositoryURL, "/")
+	lastDot := strings.LastIndex(conf.RepositoryURL, ".")
+	repoName := conf.RepositoryURL[lastSlash+1 : lastDot]
+
+	id, err := getID(conf.APIURL, conf.PrivateToken, repoName)
 	if err != nil {
-		log.Errorf("error: %s", err)
+		log.Errorf("Error: %s\n", err)
 		os.Exit(1)
 	}
-	if err := sendStatus(c.APIURL, c.PrivateToken, c.CommitHash, getStatus(c.PresetStatus), id); err != nil {
-		log.Errorf("error: %s", err)
+	if err := sendStatus(conf.APIURL, conf.PrivateToken, conf.CommitHash, getStatus(conf.PresetStatus), id); err != nil {
+		log.Errorf("Error: %s\n", err)
 		os.Exit(1)
 	}
 }

@@ -4,9 +4,8 @@ default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 app:
   envs:
   - BITRISE_STEP_ID: gitlab-status
-  - BITRISE_STEP_VERSION: "0.0.1"
+  - BITRISE_STEP_VERSION: "0.9.0"
   - MY_STEPLIB_REPO_FORK_GIT_URL: $MY_STEPLIB_REPO_FORK_GIT_URL
-
   - ORIG_BITRISE_SOURCE_DIR: $BITRISE_SOURCE_DIR
 
   # define in .bitrise.secrets.yml
@@ -17,20 +16,11 @@ workflows:
     before_run:
     - go-tests
     steps:
-    - script:
-        title: recreate _tmp directory
-        inputs:
-        - content: rm -rf "$ORIG_BITRISE_SOURCE_DIR/_tmp" && mkdir "$ORIG_BITRISE_SOURCE_DIR/_tmp"
-    - change-workdir:
-        title: Switch working dir to test / _tmp dir
-        run_if: true
-        inputs:
-        - path: "$ORIG_BITRISE_SOURCE_DIR/_tmp"
     - path::./:
         title: Step Test
         run_if: true
         inputs:
-        - api_base_url: "http://gitlab.examle.com/api/v4"
+        - api_base_url: "https://gitlab.com/api/v4"
         - private_token: "$GITLAB_PRIVATE_TOKEN"
         - repository_url: "$GIT_REPOSITORY_URL"
         - commit_hash: "$BITRISE_GIT_COMMIT"
