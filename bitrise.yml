@@ -22,8 +22,8 @@ workflows:
         inputs:
         - api_base_url: "https://gitlab.com/api/v4"
         - private_token: "$GITLAB_PRIVATE_TOKEN"
-        - repository_url: "$GIT_REPOSITORY_URL"
-        - commit_hash: "$BITRISE_GIT_COMMIT"
+        - repository_url: "$GIT_REPOSITORY_URL_TEST"
+        - commit_hash: "$BITRISE_GIT_COMMIT_TEST"
 
   go-tests:
     before_run:
