@@ -98,7 +98,7 @@ workflows:
             set -e
 
             export CI=true
-            releaseman create --version $RELEASE_VERSION
+            releaseman create --version $BITRISE_STEP_VERSION
 
   # ----------------------------------------------------------------
   # --- workflows to Share this step into a Step Library
