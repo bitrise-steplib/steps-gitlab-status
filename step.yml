@@ -18,7 +18,7 @@ toolkit:
 inputs:
   - api_base_url: ""
     opts:
-      title: "GitHub API base url"
+      title: "GitLab API base url"
       summary: ""
       description: |-
         API URL for GitLab or GitLab Enterprise
