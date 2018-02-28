@@ -15,15 +15,41 @@ workflows:
   test:
     before_run:
     - go-tests
+    after_run:
+    - _test_success
+    - _test_failed
+    - _test_no_commit_hash
+
+  _test_success:
     steps:
     - path::./:
-        title: Step Test
-        run_if: true
+        title: Test success status
         inputs:
         - api_base_url: "https://gitlab.com/api/v4"
         - private_token: "$GITLAB_PRIVATE_TOKEN"
         - repository_url: "$GIT_REPOSITORY_URL_TEST"
         - commit_hash: "$BITRISE_GIT_COMMIT_TEST"
+
+  _test_failed:
+    steps:
+    - path::./:
+        title: Test failed status
+        inputs:
+        - api_base_url: "https://gitlab.com/api/v4"
+        - private_token: "$GITLAB_PRIVATE_TOKEN"
+        - repository_url: "$GIT_REPOSITORY_URL_TEST"
+        - commit_hash: "$BITRISE_GIT_COMMIT_TEST"
+        - preset_status: failed
+
+  _test_no_commit_hash:
+    steps:
+    - path::./:
+        title: Test no commit hash specified
+        inputs:
+        - api_base_url: "https://gitlab.com/api/v4"
+        - private_token: "$GITLAB_PRIVATE_TOKEN"
+        - repository_url: "$GIT_REPOSITORY_URL_TEST"
+        - commit_hash:
 
   go-tests:
     before_run:
