@@ -93,6 +93,11 @@ func sendStatus(apiURL, token, commit, state string, id int) (err error) {
 }
 
 func main() {
+	if os.Getenv("commit_hash") == "" {
+		log.Warnf("GitLab requires a commit hash for build status reporting")
+		os.Exit(1)
+	}
+
 	var conf Config
 	if err := stepconf.Parse(&conf); err != nil {
 		log.Errorf("Error: %s\n", err)
