@@ -1,6 +1,11 @@
-## Changelog (Current version: 0.9.1)
+## Changelog (Current version: 0.9.2)
 
 -----------------
+
+### 0.9.2 (2018 Mar 02)
+
+* [f5481a8] Bump version 0.9.2
+* [96a50f7] Make the step skippable, add warning message if no commit hash (#4)
 
 ### 0.9.1 (2018 Feb 26)
 
@@ -14,4 +19,4 @@
 
 -----------------
 
-Updated: 2018 Feb 26
+Updated: 2018 Mar 02
