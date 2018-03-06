@@ -17,7 +17,7 @@ type Config struct {
 	PrivateToken  string `env:"private_token,required"`
 	RepositoryURL string `env:"repository_url,required"`
 	CommitHash    string `env:"commit_hash,required"`
-	PresetStatus  string `env:"preset_status"`
+	PresetStatus  string `env:"preset_status,opt[auto,pending,running,success,failed,canceled]"`
 }
 
 type projects []struct {
@@ -59,7 +59,7 @@ func getID(apiURL, token, repo string) (n int, err error) {
 }
 
 func getStatus(preset string) string {
-	if preset != "" {
+	if preset != "auto" {
 		return preset
 	}
 	if os.Getenv("BITRISE_BUILD_STATUS") == "0" {
@@ -98,23 +98,23 @@ func main() {
 		os.Exit(1)
 	}
 
-	var conf Config
-	if err := stepconf.Parse(&conf); err != nil {
+	var cfg Config
+	if err := stepconf.Parse(&cfg); err != nil {
 		log.Errorf("Error: %s\n", err)
 		os.Exit(1)
 	}
-	stepconf.Print(conf)
+	stepconf.Print(cfg)
 
-	lastSlash := strings.LastIndex(conf.RepositoryURL, "/")
-	lastDot := strings.LastIndex(conf.RepositoryURL, ".")
-	repoName := conf.RepositoryURL[lastSlash+1 : lastDot]
+	lastSlash := strings.LastIndex(cfg.RepositoryURL, "/")
+	lastDot := strings.LastIndex(cfg.RepositoryURL, ".")
+	repoName := cfg.RepositoryURL[lastSlash+1 : lastDot]
 
-	id, err := getID(conf.APIURL, conf.PrivateToken, repoName)
+	id, err := getID(cfg.APIURL, cfg.PrivateToken, repoName)
 	if err != nil {
 		log.Errorf("Error: %s\n", err)
 		os.Exit(1)
 	}
-	if err := sendStatus(conf.APIURL, conf.PrivateToken, conf.CommitHash, getStatus(conf.PresetStatus), id); err != nil {
+	if err := sendStatus(cfg.APIURL, cfg.PrivateToken, cfg.CommitHash, getStatus(cfg.PresetStatus), id); err != nil {
 		log.Errorf("Error: %s\n", err)
 		os.Exit(1)
 	}
