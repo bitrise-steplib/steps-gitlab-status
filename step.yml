@@ -52,11 +52,20 @@ inputs:
       description: |-
         The commit hash for the commit we are working with
       is_required: true
-  - preset_status: ""
+  - preset_status: "auto"
     opts:
       title: "Set Specific Status"
       summary: ""
       description: |-
         If set, this step will set a specific status instead of reporting the current build status.
         
-        Can be one of pending, running, success, failed or canceled.
+        Can be one of auto, pending, running, success, failed or canceled.
+        If you select `auto` the step will send `success` status if the current build status is success (no step failed previously)
+        and `failed` status if the build previously failed.
+      value_options:
+      - "auto"
+      - "pending"
+      - "running"
+      - "success"
+      - "failed"
+      - "canceled"

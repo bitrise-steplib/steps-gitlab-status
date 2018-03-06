@@ -17,7 +17,7 @@ type Config struct {
 	PrivateToken  string `env:"private_token,required"`
 	RepositoryURL string `env:"repository_url,required"`
 	CommitHash    string `env:"commit_hash,required"`
-	PresetStatus  string `env:"preset_status"`
+	PresetStatus  string `env:"preset_status,opt[auto,pending,running,success,failed,canceled]"`
 }
 
 type projects []struct {
@@ -25,23 +25,21 @@ type projects []struct {
 	Name string `json:"name"`
 }
 
-func getID(apiURL, token, repo string) (n int, err error) {
-	client := &http.Client{}
-	var req *http.Request
+func getID(apiURL, token, repo string) (int, error) {
 	url := fmt.Sprintf("%s/projects?simple=true&membership=true&search=%s", apiURL, repo)
-	req, err = http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return 0, err
 	}
 	req.Header.Add("PRIVATE-TOKEN", token)
 
-	resp, err := client.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return 0, fmt.Errorf("failed to send the request: %s", err)
 	}
 	defer func() {
-		if cerr := resp.Body.Close(); err == nil {
-			err = cerr
+		if err := resp.Body.Close(); err != nil {
+			log.Warnf(err.Error())
 		}
 	}()
 
@@ -59,7 +57,7 @@ func getID(apiURL, token, repo string) (n int, err error) {
 }
 
 func getStatus(preset string) string {
-	if preset != "" {
+	if preset != "auto" {
 		return preset
 	}
 	if os.Getenv("BITRISE_BUILD_STATUS") == "0" {
@@ -69,23 +67,21 @@ func getStatus(preset string) string {
 }
 
 // https://docs.gitlab.com/ce/api/commits.html#post-the-build-status-to-a-commit
-func sendStatus(apiURL, token, commit, state string, id int) (err error) {
-	client := &http.Client{}
+func sendStatus(apiURL, token, commit, state string, id int) error {
 	url := fmt.Sprintf("%s/projects/%d/statuses/%s?state=%s", apiURL, id, commit, state)
-	var req *http.Request
-	req, err = http.NewRequest("POST", url, nil)
+	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return err
 	}
 	req.Header.Add("PRIVATE-TOKEN", token)
 
-	resp, err := client.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("failed to send the request: %s", err)
 	}
 	defer func() {
-		if cerr := resp.Body.Close(); err == nil {
-			err = cerr
+		if err := resp.Body.Close(); err != nil {
+			log.Warnf(err.Error())
 		}
 	}()
 
@@ -98,23 +94,23 @@ func main() {
 		os.Exit(1)
 	}
 
-	var conf Config
-	if err := stepconf.Parse(&conf); err != nil {
+	var cfg Config
+	if err := stepconf.Parse(&cfg); err != nil {
 		log.Errorf("Error: %s\n", err)
 		os.Exit(1)
 	}
-	stepconf.Print(conf)
+	stepconf.Print(cfg)
 
-	lastSlash := strings.LastIndex(conf.RepositoryURL, "/")
-	lastDot := strings.LastIndex(conf.RepositoryURL, ".")
-	repoName := conf.RepositoryURL[lastSlash+1 : lastDot]
+	lastSlash := strings.LastIndex(cfg.RepositoryURL, "/")
+	lastDot := strings.LastIndex(cfg.RepositoryURL, ".")
+	repoName := cfg.RepositoryURL[lastSlash+1 : lastDot]
 
-	id, err := getID(conf.APIURL, conf.PrivateToken, repoName)
+	id, err := getID(cfg.APIURL, cfg.PrivateToken, repoName)
 	if err != nil {
 		log.Errorf("Error: %s\n", err)
 		os.Exit(1)
 	}
-	if err := sendStatus(conf.APIURL, conf.PrivateToken, conf.CommitHash, getStatus(conf.PresetStatus), id); err != nil {
+	if err := sendStatus(cfg.APIURL, cfg.PrivateToken, cfg.CommitHash, getStatus(cfg.PresetStatus), id); err != nil {
 		log.Errorf("Error: %s\n", err)
 		os.Exit(1)
 	}
