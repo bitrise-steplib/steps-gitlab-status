@@ -60,8 +60,8 @@ inputs:
         If set, this step will set a specific status instead of reporting the current build status.
         
         Can be one of auto, pending, running, success, failed or canceled.
-        If you select `auto` step will send `success` status if the build successful
-        and `failed` status if the step previously failed.
+        If you select `auto` the step will send `success` status if the current build status is success (no step failed previously)
+        and `failed` status if the build previously failed.
       value_options:
       - "auto"
       - "pending"
