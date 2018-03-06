@@ -25,23 +25,21 @@ type projects []struct {
 	Name string `json:"name"`
 }
 
-func getID(apiURL, token, repo string) (n int, err error) {
-	client := &http.Client{}
-	var req *http.Request
+func getID(apiURL, token, repo string) (int, error) {
 	url := fmt.Sprintf("%s/projects?simple=true&membership=true&search=%s", apiURL, repo)
-	req, err = http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return 0, err
 	}
 	req.Header.Add("PRIVATE-TOKEN", token)
 
-	resp, err := client.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return 0, fmt.Errorf("failed to send the request: %s", err)
 	}
 	defer func() {
-		if cerr := resp.Body.Close(); err == nil {
-			err = cerr
+		if err := resp.Body.Close(); err != nil {
+			log.Warnf(err.Error())
 		}
 	}()
 
@@ -69,23 +67,21 @@ func getStatus(preset string) string {
 }
 
 // https://docs.gitlab.com/ce/api/commits.html#post-the-build-status-to-a-commit
-func sendStatus(apiURL, token, commit, state string, id int) (err error) {
-	client := &http.Client{}
+func sendStatus(apiURL, token, commit, state string, id int) error {
 	url := fmt.Sprintf("%s/projects/%d/statuses/%s?state=%s", apiURL, id, commit, state)
-	var req *http.Request
-	req, err = http.NewRequest("POST", url, nil)
+	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return err
 	}
 	req.Header.Add("PRIVATE-TOKEN", token)
 
-	resp, err := client.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("failed to send the request: %s", err)
 	}
 	defer func() {
-		if cerr := resp.Body.Close(); err == nil {
-			err = cerr
+		if err := resp.Body.Close(); err != nil {
+			log.Warnf(err.Error())
 		}
 	}()
 
