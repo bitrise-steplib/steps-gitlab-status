@@ -1,6 +1,11 @@
-## Changelog (Current version: 0.9.2)
+## Changelog (Current version: 0.9.3)
 
 -----------------
+
+### 0.9.3 (2018 Mar 07)
+
+* [8f91ebf] Bump version 0.9.3
+* [d3e5eb7] Set value options for preset_status input, update input description (#5)
 
 ### 0.9.2 (2018 Mar 02)
 
@@ -19,4 +24,4 @@
 
 -----------------
 
-Updated: 2018 Mar 02
+Updated: 2018 Mar 07
