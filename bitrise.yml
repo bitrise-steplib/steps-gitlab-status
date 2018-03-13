@@ -29,6 +29,8 @@ workflows:
         - private_token: "$GITLAB_PRIVATE_TOKEN"
         - repository_url: "$GIT_REPOSITORY_URL_TEST"
         - commit_hash: "$BITRISE_GIT_COMMIT_TEST"
+        - description: "Step test"
+        - target_url: "https://bitrise.io"
 
   _test_failed:
     steps:
@@ -39,6 +41,8 @@ workflows:
         - private_token: "$GITLAB_PRIVATE_TOKEN"
         - repository_url: "$GIT_REPOSITORY_URL_TEST"
         - commit_hash: "$BITRISE_GIT_COMMIT_TEST"
+        - description: "step test"
+        - target_url: "https://bitrise.io"
         - preset_status: failed
 
   _test_no_commit_hash:
@@ -71,7 +75,7 @@ workflows:
             #!/bin/bash
             set -ex
 
-            errcheck -asserts=true -blank=true $GOLIST_WITHOUT_VENDOR
+            errcheck -exclude <(echo "(io.Closer).Close") -asserts=true -blank=true $GOLIST_WITHOUT_VENDOR
     - script:
         title: Go lint
         inputs:

@@ -52,6 +52,20 @@ inputs:
       description: |-
         The commit hash for the commit we are working with
       is_required: true
+  - target_url: "$BITRISE_BUILD_URL"
+    opts:
+      title: "Target URL"
+      summary: ""
+      description: |-
+        The target URL to associate with this status.
+        This URL will be linked from the GitLab UI to allow users to easily see the source of the status.
+  - context: "Bitrise"
+    opts:
+      title: "Context"
+      summary: "The Identifier to be used for this status"
+      description: |-
+        A string label to differentiate this status from the status of other systems.
+        Default: `default`
   - preset_status: "auto"
     opts:
       title: "Set Specific Status"
@@ -69,3 +83,11 @@ inputs:
       - "success"
       - "failed"
       - "canceled"
+  - description:
+    opts:
+      title: "Description"
+      summary: "A short description of the status."
+      description: |-
+        The short description of the status.
+
+        If leaved empty, it will be the status of the build.

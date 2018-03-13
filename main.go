@@ -1,9 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
@@ -11,52 +11,27 @@ import (
 	"github.com/bitrise-tools/go-steputils/stepconf"
 )
 
-// Config ...
-type Config struct {
-	APIURL        string `env:"api_base_url,required"`
+type config struct {
 	PrivateToken  string `env:"private_token,required"`
 	RepositoryURL string `env:"repository_url,required"`
 	CommitHash    string `env:"commit_hash,required"`
-	PresetStatus  string `env:"preset_status,opt[auto,pending,running,success,failed,canceled]"`
+	APIURL        string `env:"api_base_url,required"`
+
+	Status      string `env:"preset_status,opt[auto,pending,running,success,failed,canceled]"`
+	TargetURL   string `env:"target_url"`
+	Context     string `env:"context"`
+	Description string `env:"description"`
 }
 
-type projects []struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+// getRepo parses the repository from a url. Possible url formats:
+// - https://hostname/owner/repository.git
+// - git@hostname:owner/repository.git
+func getRepo(url string) string {
+	url = strings.TrimPrefix(strings.TrimPrefix(url, "https://"), "git@")
+	return url[strings.IndexAny(url, ":/")+1 : strings.Index(url, ".git")]
 }
 
-func getID(apiURL, token, repo string) (int, error) {
-	url := fmt.Sprintf("%s/projects?simple=true&membership=true&search=%s", apiURL, repo)
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return 0, err
-	}
-	req.Header.Add("PRIVATE-TOKEN", token)
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return 0, fmt.Errorf("failed to send the request: %s", err)
-	}
-	defer func() {
-		if err := resp.Body.Close(); err != nil {
-			log.Warnf(err.Error())
-		}
-	}()
-
-	var ps projects
-	if err := json.NewDecoder(resp.Body).Decode(&ps); err != nil {
-		return 0, err
-	}
-
-	for _, p := range ps {
-		if p.Name == repo {
-			return p.ID, nil
-		}
-	}
-	return 0, fmt.Errorf("id not found for repository (%s)", repo)
-}
-
-func getStatus(preset string) string {
+func getState(preset string) string {
 	if preset != "auto" {
 		return preset
 	}
@@ -66,24 +41,36 @@ func getStatus(preset string) string {
 	return "failed"
 }
 
-// https://docs.gitlab.com/ce/api/commits.html#post-the-build-status-to-a-commit
-func sendStatus(apiURL, token, commit, state string, id int) error {
-	url := fmt.Sprintf("%s/projects/%d/statuses/%s?state=%s", apiURL, id, commit, state)
-	req, err := http.NewRequest("POST", url, nil)
+func getDescription(desc, state string) string {
+	if desc == "" {
+		strings.Title(getState(state))
+	}
+	return desc
+}
+
+// sendStatus creates a commit status for the given commit.
+// see also: https://docs.gitlab.com/ce/api/commits.html#post-the-build-status-to-a-commit
+func sendStatus(cfg config) error {
+	repo := url.PathEscape(getRepo(cfg.RepositoryURL))
+	form := url.Values{
+		"state":       {getState(cfg.Status)},
+		"target_url":  {cfg.TargetURL},
+		"description": {getDescription(cfg.Description, cfg.Status)},
+		"context":     {cfg.Context},
+	}
+
+	url := fmt.Sprintf("%s/projects/%s/statuses/%s", cfg.APIURL, repo, cfg.CommitHash)
+	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
 	if err != nil {
 		return err
 	}
-	req.Header.Add("PRIVATE-TOKEN", token)
+	req.Header.Add("PRIVATE-TOKEN", cfg.PrivateToken)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("failed to send the request: %s", err)
 	}
-	defer func() {
-		if err := resp.Body.Close(); err != nil {
-			log.Warnf(err.Error())
-		}
-	}()
+	defer resp.Body.Close()
 
 	return err
 }
@@ -94,23 +81,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	var cfg Config
+	var cfg config
 	if err := stepconf.Parse(&cfg); err != nil {
 		log.Errorf("Error: %s\n", err)
 		os.Exit(1)
 	}
 	stepconf.Print(cfg)
 
-	lastSlash := strings.LastIndex(cfg.RepositoryURL, "/")
-	lastDot := strings.LastIndex(cfg.RepositoryURL, ".")
-	repoName := cfg.RepositoryURL[lastSlash+1 : lastDot]
-
-	id, err := getID(cfg.APIURL, cfg.PrivateToken, repoName)
-	if err != nil {
-		log.Errorf("Error: %s\n", err)
-		os.Exit(1)
-	}
-	if err := sendStatus(cfg.APIURL, cfg.PrivateToken, cfg.CommitHash, getStatus(cfg.PresetStatus), id); err != nil {
+	if err := sendStatus(cfg); err != nil {
 		log.Errorf("Error: %s\n", err)
 		os.Exit(1)
 	}
