@@ -1,6 +1,11 @@
-## Changelog (Current version: 0.9.3)
+## Changelog (Current version: 0.9.4)
 
 -----------------
+
+### 0.9.4 (2018 Mar 14)
+
+* [d171fcf] Bump version to 0.9.4
+* [e05131d] Add target_url, context and description inputs (#6)
 
 ### 0.9.3 (2018 Mar 07)
 
@@ -24,4 +29,4 @@
 
 -----------------
 
-Updated: 2018 Mar 07
+Updated: 2018 Mar 14
