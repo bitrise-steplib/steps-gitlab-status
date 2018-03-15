@@ -1,6 +1,11 @@
-## Changelog (Current version: 0.9.4)
+## Changelog (Current version: 0.9.5)
 
 -----------------
+
+### 0.9.5 (2018 Mar 15)
+
+* [1405998] Bump version to 0.9.5
+* [71dabda] Fix input descriptions (#7)
 
 ### 0.9.4 (2018 Mar 14)
 
@@ -29,4 +34,4 @@
 
 -----------------
 
-Updated: 2018 Mar 14
+Updated: 2018 Mar 15
