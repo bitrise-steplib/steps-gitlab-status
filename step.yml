@@ -1,9 +1,6 @@
-title: |-
-  GitLab status
-summary: |
-  Update commit status for GitLab repositories
-description: |
-  Update commit status for GitLab repositories
+title: GitLab status
+summary: Update commit status for GitLab repositories
+description: Update commit status for GitLab repositories
 website: https://github.com/bitrise-steplib/steps-gitlab-status
 source_code_url: https://github.com/bitrise-steplib/steps-gitlab-status
 support_url: https://github.com/bitrise-steplib/steps-gitlab-status/issues
@@ -38,6 +35,7 @@ inputs:
         3. Pick a _name_ and set a _scope_ for the token
         4. Click on **Create personal access token** and save your new token
       is_required: true
+      is_sensitive: true
   - repository_url: "$GIT_REPOSITORY_URL"
     opts:
       title: "Repository URL"
