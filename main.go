@@ -13,7 +13,7 @@ import (
 
 type config struct {
 	PrivateToken  string `env:"private_token,required"`
-	RepositoryURL string `env:"repository_url,required"`
+	ProjectId     string `env:"project_id,required"`
 	CommitHash    string `env:"commit_hash,required"`
 	APIURL        string `env:"api_base_url,required"`
 
@@ -21,14 +21,6 @@ type config struct {
 	TargetURL   string `env:"target_url"`
 	Context     string `env:"context"`
 	Description string `env:"description"`
-}
-
-// getRepo parses the repository from a url. Possible url formats:
-// - https://hostname/owner/repository.git
-// - git@hostname:owner/repository.git
-func getRepo(url string) string {
-	url = strings.TrimPrefix(strings.TrimPrefix(url, "https://"), "git@")
-	return url[strings.IndexAny(url, ":/")+1 : strings.Index(url, ".git")]
 }
 
 func getState(preset string) string {
@@ -51,7 +43,6 @@ func getDescription(desc, state string) string {
 // sendStatus creates a commit status for the given commit.
 // see also: https://docs.gitlab.com/ce/api/commits.html#post-the-build-status-to-a-commit
 func sendStatus(cfg config) error {
-	repo := url.PathEscape(getRepo(cfg.RepositoryURL))
 	form := url.Values{
 		"state":       {getState(cfg.Status)},
 		"target_url":  {cfg.TargetURL},
@@ -59,7 +50,7 @@ func sendStatus(cfg config) error {
 		"context":     {cfg.Context},
 	}
 
-	url := fmt.Sprintf("%s/projects/%s/statuses/%s", cfg.APIURL, repo, cfg.CommitHash)
+	url := fmt.Sprintf("%s/projects/%s/statuses/%s", cfg.APIURL, cfg.ProjectId, cfg.CommitHash)
 	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
 	if err != nil {
 		return err

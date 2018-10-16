@@ -36,12 +36,12 @@ inputs:
         4. Click on **Create personal access token** and save your new token
       is_required: true
       is_sensitive: true
-  - repository_url: "$GIT_REPOSITORY_URL"
+  - project_id: ""
     opts:
-      title: "Repository URL"
+      title: "Project ID"
       summary: ""
       description: |-
-        The URL for the repository we are working with
+        The ID of the Project in GitLab
       is_required: true
   - commit_hash: "$BITRISE_GIT_COMMIT"
     opts:
@@ -71,7 +71,7 @@ inputs:
       summary: ""
       description: |-
         If set, this step will set a specific status instead of reporting the current build status.
-        
+
         Can be one of auto, pending, running, success, failed or canceled.
         If you select `auto` the step will send `success` status if the current build status is success (no step failed previously)
         and `failed` status if the build previously failed.
