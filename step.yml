@@ -96,5 +96,5 @@ inputs:
       summary: "Test coverage"
       description: |-
         The test coverage. 
-		
-		Must be a representation of a floating number. If not, it will be discarded.
+        
+        Must be a representation of a floating number. If not, it will be discarded.
