@@ -21,6 +21,7 @@ type config struct {
 	TargetURL   string `env:"target_url"`
 	Context     string `env:"context"`
 	Description string `env:"description"`
+	Coverage    string `env:"coverage"`
 }
 
 // getRepo parses the repository from a url. Possible url formats:
@@ -57,6 +58,13 @@ func sendStatus(cfg config) error {
 		"target_url":  {cfg.TargetURL},
 		"description": {getDescription(cfg.Description, cfg.Status)},
 		"context":     {cfg.Context},
+	}
+	
+	// TODO: add in main a check for coverage to be a float (cast from string to float and check error)
+	coverage := cfg.Coverage
+	
+	if coverage != "" {
+		form.Add("coverage", coverage)
 	}
 
 	url := fmt.Sprintf("%s/projects/%s/statuses/%s", cfg.APIURL, repo, cfg.CommitHash)

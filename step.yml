@@ -90,3 +90,11 @@ inputs:
         The short description of the status.
 
         If left empty, it will be the status of the build.
+  - coverage:
+    opts:
+      title: "Coverage"
+      summary: "Test coverage"
+      description: |-
+        The test coverage. 
+		
+		Must be a representation of a floating number. If not, it will be discarded.
