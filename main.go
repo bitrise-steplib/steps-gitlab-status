@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"strconv"
 
 	"github.com/bitrise-io/go-utils/log"
 	"github.com/bitrise-tools/go-steputils/stepconf"
