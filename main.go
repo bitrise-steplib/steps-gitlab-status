@@ -60,11 +60,12 @@ func sendStatus(cfg config) error {
 		"context":     {cfg.Context},
 	}
 	
-	// TODO: add in main a check for coverage to be a float (cast from string to float and check error)
 	coverage := cfg.Coverage
 	
-	if coverage != "" {
-		form.Add("coverage", coverage)
+	if _, err := strconv.ParseFloat(coverage, 32); err == nil {
+	    form.Add("coverage", coverage)
+	} else {
+		log.Warnf("Coverage is not a representation of a floting point number: it will not be sent.")
 	}
 
 	url := fmt.Sprintf("%s/projects/%s/statuses/%s", cfg.APIURL, repo, cfg.CommitHash)
