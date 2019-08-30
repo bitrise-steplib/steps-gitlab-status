@@ -70,7 +70,6 @@ func sendStatus(cfg config) error {
 	}
 
 	url := fmt.Sprintf("%s/projects/%s/statuses/%s", cfg.APIURL, repo, cfg.CommitHash)
-	log.Warnf("URL: %s", url)
 	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
 	if err != nil {
 		return err
