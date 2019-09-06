@@ -67,7 +67,7 @@ func sendStatus(cfg config) error {
 	    form.Add("coverage", coverage)
 	} else {
 		log.Warnf("Coverage is not a representation of a floting point number: setting it to 0.0.")
-		form.Add("coverage", 0.0)
+		form.Add("coverage", "0.0")
 	}
 
 	url := fmt.Sprintf("%s/projects/%s/statuses/%s", cfg.APIURL, repo, cfg.CommitHash)
