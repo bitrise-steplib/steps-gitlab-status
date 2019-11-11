@@ -97,6 +97,5 @@ inputs:
       description: |-
         The test coverage.
 
-        Must be a representation of a floating number. If not, it will be discarded. The minimum is 0.0 and the
-        maximum is 100.0.
+        Must be a floating point number between 0.0 and 100.0.
       is_required: false
