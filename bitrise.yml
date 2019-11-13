@@ -1,15 +1,12 @@
-format_version: 5
+format_version: 8
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 
 app:
   envs:
-  - BITRISE_STEP_ID: gitlab-status
-  - BITRISE_STEP_VERSION: "0.9.5"
-  - MY_STEPLIB_REPO_FORK_GIT_URL: $MY_STEPLIB_REPO_FORK_GIT_URL
-  - ORIG_BITRISE_SOURCE_DIR: $BITRISE_SOURCE_DIR
-
   # define in .bitrise.secrets.yml
   - GITLAB_PRIVATE_TOKEN: $GITLAB_PRIVATE_TOKEN
+  - BITRISE_GIT_COMMIT_TEST: $BITRISE_GIT_COMMIT_TEST
+  - GIT_REPOSITORY_URL_TEST: $GIT_REPOSITORY_URL_TEST
 
 workflows:
   test:
@@ -21,14 +18,15 @@ workflows:
     - errcheck:
     - go-test:
     after_run:
-    - _test_success
-    - _test_failed
-    - _test_no_commit_hash
+    - test_success
+    - test_failed
+    - test_no_commit_hash_wrapper
 
-  _test_success:
+  test_success:
     steps:
     - path::./:
         title: Test success status
+        is_skippable: false
         inputs:
         - api_base_url: "https://gitlab.com/api/v4"
         - private_token: "$GITLAB_PRIVATE_TOKEN"
@@ -37,10 +35,11 @@ workflows:
         - description: "Step test"
         - target_url: "https://bitrise.io"
 
-  _test_failed:
+  test_failed:
     steps:
     - path::./:
         title: Test failed status
+        is_skippable: false
         inputs:
         - api_base_url: "https://gitlab.com/api/v4"
         - private_token: "$GITLAB_PRIVATE_TOKEN"
@@ -50,10 +49,22 @@ workflows:
         - target_url: "https://bitrise.io"
         - preset_status: failed
 
-  _test_no_commit_hash:
+  test_no_commit_hash_wrapper:
+    steps:
+    - script:
+        inputs:
+        - content: |-
+            #!/bin/env bash
+            bitrise run test_no_commit_hash
+            if [ $? != 1 ]; then
+              exit 1
+            fi
+
+  test_no_commit_hash:
     steps:
     - path::./:
         title: Test no commit hash specified
+        is_skippable: false
         inputs:
         - api_base_url: "https://gitlab.com/api/v4"
         - private_token: "$GITLAB_PRIVATE_TOKEN"
@@ -67,6 +78,6 @@ workflows:
     - script:
         inputs:
         - content: |-
-            #!/bin/bash
+            #!/bin/env bash
             set -ex
             stepman audit --step-yml ./step.yml

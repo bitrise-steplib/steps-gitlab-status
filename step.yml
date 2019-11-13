@@ -73,8 +73,8 @@ inputs:
         If set, this step will set a specific status instead of reporting the current build status.
         
         Can be one of auto, pending, running, success, failed or canceled.
-        If you select `auto` the step will send `success` status if the current build status is success (no step failed previously)
-        and `failed` status if the build previously failed.
+        If you select `auto` the step will send `success` status if the current build status is success (no step failed
+        previously) and `failed` status if the build previously failed.
       value_options:
       - "auto"
       - "pending"
@@ -90,3 +90,12 @@ inputs:
         The short description of the status.
 
         If left empty, it will be the status of the build.
+  - coverage:
+    opts:
+      title: "Coverage"
+      summary: "Test coverage"
+      description: |-
+        The test coverage.
+
+        Must be a floating point number between 0.0 and 100.0.
+      is_required: false
