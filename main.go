@@ -28,7 +28,7 @@ type config struct {
 // - https://hostname/owner/repository.git
 // - git@hostname:owner/repository.git
 func getRepo(url string) string {
-	url = strings.TrimPrefix(strings.TrimPrefix(url, "https://"), "git@")
+	url = strings.TrimPrefix(strings.TrimPrefix(strings.TrimPrefix(url, "ssh://"), "https://"), "git@")
 	return url[strings.IndexAny(url, ":/")+1 : strings.Index(url, ".git")]
 }
 
