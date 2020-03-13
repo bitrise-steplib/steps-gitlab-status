@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/bitrise-io/go-utils/log"
@@ -24,12 +25,13 @@ type config struct {
 	Coverage    float64 `env:"coverage,range[0.0..100.0]"`
 }
 
-// getRepo parses the repository from a url. Possible url formats:
-// - https://hostname/owner/repository.git
-// - git@hostname:owner/repository.git
-func getRepo(url string) string {
-	url = strings.TrimPrefix(strings.TrimPrefix(strings.TrimPrefix(url, "ssh://"), "https://"), "git@")
-	return url[strings.IndexAny(url, ":/")+1 : strings.Index(url, ".git")]
+// getRepo parses the repository from a url
+func getRepo(u string) string {
+	r := regexp.MustCompile(`.*[:/](.*?\/.*?)(?:\.git|$)`)
+	if matches := r.FindStringSubmatch(u); len(matches) == 2 {
+		return matches[1]
+	}
+	return ""
 }
 
 func getState(preset string) string {
@@ -52,7 +54,7 @@ func getDescription(desc, state string) string {
 // sendStatus creates a commit status for the given commit.
 // see also: https://docs.gitlab.com/ce/api/commits.html#post-the-build-status-to-a-commit
 func sendStatus(cfg config) error {
-	repo := url.PathEscape(getRepo(cfg.RepositoryURL))
+	repo := getRepo(cfg.RepositoryURL)
 	form := url.Values{
 		"state":       {getState(cfg.Status)},
 		"target_url":  {cfg.TargetURL},
