@@ -55,7 +55,7 @@ func getDescription(desc, state string) string {
 // sendStatus creates a commit status for the given commit.
 // see also: https://docs.gitlab.com/ce/api/commits.html#post-the-build-status-to-a-commit
 func sendStatus(cfg config) error {
-	repo := getRepo(cfg.RepositoryURL)
+	repo := url.PathEscape(getRepo(cfg.RepositoryURL))
 	form := url.Values{
 		"state":       {getState(cfg.Status)},
 		"target_url":  {cfg.TargetURL},
