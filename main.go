@@ -79,6 +79,8 @@ func sendStatus(cfg config) error {
 		return fmt.Errorf("server error: %s", resp.Status)
 	}
 
+	fmt.Printf("server status: %s url: %s code: %d", resp.Status, url, resp.StatusCode)
+
 	return err
 }
 
