@@ -87,8 +87,8 @@ workflows:
         - private_token: "$GITLAB_PRIVATE_TOKEN"
         - repository_url: "$GIT_REPOSITORY_URL_TEST"
         - commit_hash: $GIT_COMMIT_ON_MULTIPLE_BRANCH
-        - git_branch: "same-commit-on-other-branch2"
-        - preset_status: failed
+        - git_ref: "same-commit-on-other-branch2"
+        - preset_status: success
 
 
   # ----------------------------------------------------------------
