@@ -1,4 +1,4 @@
-format_version: 5
+format_version: 8
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 
 app:
@@ -26,13 +26,14 @@ workflows:
     after_run:
     - test_success
     - test_failed
-    - test_no_commit_hash
+    - test_no_commit_hash_wrapper
     - test_commit_on_multiple_branches
 
   test_success:
     steps:
     - path::./:
         title: Test success status
+        is_skippable: false
         inputs:
         - api_base_url: "https://gitlab.com/api/v4"
         - private_token: "$GITLAB_PRIVATE_TOKEN"
@@ -45,6 +46,7 @@ workflows:
     steps:
     - path::./:
         title: Test failed status
+        is_skippable: false
         inputs:
         - api_base_url: "https://gitlab.com/api/v4"
         - private_token: "$GITLAB_PRIVATE_TOKEN"
@@ -54,10 +56,22 @@ workflows:
         - target_url: "https://bitrise.io"
         - preset_status: failed
 
+  test_no_commit_hash_wrapper:
+    steps:
+    - script:
+        inputs:
+        - content: |-
+            #!/bin/env bash
+            bitrise run test_no_commit_hash
+            if [ $? != 1 ]; then
+              exit 1
+            fi
+
   test_no_commit_hash:
     steps:
     - path::./:
         title: Test no commit hash specified
+        is_skippable: false
         inputs:
         - api_base_url: "https://gitlab.com/api/v4"
         - private_token: "$GITLAB_PRIVATE_TOKEN"
@@ -84,6 +98,6 @@ workflows:
     - script:
         inputs:
         - content: |-
-            #!/bin/bash
+            #!/bin/env bash
             set -ex
             stepman audit --step-yml ./step.yml

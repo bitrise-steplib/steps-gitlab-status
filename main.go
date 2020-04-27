@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/bitrise-io/go-utils/log"
@@ -18,18 +20,20 @@ type config struct {
 	CommitHash    string `env:"commit_hash,required"`
 	APIURL        string `env:"api_base_url,required"`
 
-	Status      string `env:"preset_status,opt[auto,pending,running,success,failed,canceled]"`
-	TargetURL   string `env:"target_url"`
-	Context     string `env:"context"`
-	Description string `env:"description"`
+	Status      string  `env:"preset_status,opt[auto,pending,running,success,failed,canceled]"`
+	TargetURL   string  `env:"target_url"`
+	Context     string  `env:"context"`
+	Description string  `env:"description"`
+	Coverage    float64 `env:"coverage,range[0.0..100.0]"`
 }
 
-// getRepo parses the repository from a url. Possible url formats:
-// - https://hostname/owner/repository.git
-// - git@hostname:owner/repository.git
-func getRepo(url string) string {
-	url = strings.TrimPrefix(strings.TrimPrefix(url, "https://"), "git@")
-	return url[strings.IndexAny(url, ":/")+1 : strings.Index(url, ".git")]
+// getRepo parses the repository from a url
+func getRepo(u string) string {
+	r := regexp.MustCompile(`.*[:/](.+?\/.+?)(?:\.git|$|\/)`)
+	if matches := r.FindStringSubmatch(u); len(matches) == 2 {
+		return matches[1]
+	}
+	return ""
 }
 
 func getState(preset string) string {
@@ -44,7 +48,7 @@ func getState(preset string) string {
 
 func getDescription(desc, state string) string {
 	if desc == "" {
-		strings.Title(getState(state))
+		return strings.Title(getState(state))
 	}
 	return desc
 }
@@ -58,6 +62,7 @@ func sendStatus(cfg config) error {
 		"target_url":  {cfg.TargetURL},
 		"description": {getDescription(cfg.Description, cfg.Status)},
 		"context":     {cfg.Context},
+		"coverage":    {fmt.Sprintf("%f", cfg.Coverage)},
 	}
 
 	if strings.TrimSpace(cfg.GitRef) != "" {
@@ -75,11 +80,17 @@ func sendStatus(cfg config) error {
 	if err != nil {
 		return fmt.Errorf("failed to send the request: %s", err)
 	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
 	if err := resp.Body.Close(); err != nil {
 		return err
 	}
 	if 200 > resp.StatusCode || resp.StatusCode >= 300 {
-		return fmt.Errorf("server error: %s", resp.Status)
+		return fmt.Errorf("server error: %s url: %s code: %d body: %s", resp.Status, url, resp.StatusCode, string(body))
 	}
 
 	return err

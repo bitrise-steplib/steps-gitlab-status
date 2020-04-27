@@ -30,10 +30,10 @@ inputs:
         Authorization token for GitLab applications
 
         Generating a personal access token:
-        1. Log in to your GitLab instance
-        2. Go to User Settings > Access Tokens
-        3. Pick a _name_ and set a _scope_ for the token
-        4. Click on **Create personal access token** and save your new token
+        1. Log in to your GitLab instance.
+        2. Go to User Settings > Access Tokens.
+        3. Pick a _name_ and set a _scope_ for the token.
+        4. Click on **Create personal access token** and save your new token.
       is_required: true
       is_sensitive: true
   - repository_url: "$GIT_REPOSITORY_URL"
@@ -81,9 +81,9 @@ inputs:
       description: |-
         If set, this step will set a specific status instead of reporting the current build status.
         
-        Can be one of auto, pending, running, success, failed or canceled.
-        If you select `auto` the step will send `success` status if the current build status is success (no step failed previously)
-        and `failed` status if the build previously failed.
+        Can be one of `auto`, `pending`, `running`, `success`, `failed` or `canceled`.
+        If you select `auto`, the step will send `success` status if the current build status is `success` 
+        (no step failed previously) and `failed` status if the build previously failed.
       value_options:
       - "auto"
       - "pending"
@@ -99,3 +99,12 @@ inputs:
         The short description of the status.
 
         If left empty, it will be the status of the build.
+  - coverage:
+    opts:
+      title: "Coverage"
+      summary: "Test coverage"
+      description: |-
+        The test coverage.
+
+        Must be a floating point number between 0.0 and 100.0.
+      is_required: false
