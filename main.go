@@ -16,7 +16,7 @@ import (
 type config struct {
 	PrivateToken  string `env:"private_token,required"`
 	RepositoryURL string `env:"repository_url,required"`
-	GitRef        string `env:"git_branch"`
+	GitRef        string `env:"git_ref"`
 	CommitHash    string `env:"commit_hash,required"`
 	APIURL        string `env:"api_base_url,required"`
 
