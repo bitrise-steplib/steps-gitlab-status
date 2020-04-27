@@ -43,16 +43,14 @@ inputs:
       description: |-
         The URL for the repository we are working with
       is_required: true
-  - git_branch: "$BITRISE_GIT_BRANCH"
+  - git_ref: "$BITRISE_GIT_BRANCH"
     opts:
-      title: "Git branch"
+      title: "The name of a repository branch or tag or, if not given, the default branch"
       summary: ""
       description: |-
-        The branch for which the status needs to be reported
+        The name of a repository branch or tag for which the status needs to be reported
 
-        In case of a same commit hash on multiple branches
-        we need to let Gitlab know the _ref_ so the pipeline status
-        is updated correctly
+        In case of a same commit hash on multiple branches, _ref_  will be used so the pipeline status is updated on the correct branch.
       is_required: true
   - commit_hash: "$BITRISE_GIT_COMMIT"
     opts:

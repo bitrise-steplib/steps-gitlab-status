@@ -14,7 +14,7 @@ import (
 type config struct {
 	PrivateToken  string `env:"private_token,required"`
 	RepositoryURL string `env:"repository_url,required"`
-	GitBranch     string `env:"git_branch,required"`
+	GitRef        string `env:"git_branch"`
 	CommitHash    string `env:"commit_hash,required"`
 	APIURL        string `env:"api_base_url,required"`
 
@@ -55,10 +55,13 @@ func sendStatus(cfg config) error {
 	repo := url.PathEscape(getRepo(cfg.RepositoryURL))
 	form := url.Values{
 		"state":       {getState(cfg.Status)},
-		"ref":         {cfg.GitBranch},
 		"target_url":  {cfg.TargetURL},
 		"description": {getDescription(cfg.Description, cfg.Status)},
 		"context":     {cfg.Context},
+	}
+
+	if strings.TrimSpace(cfg.GitRef) != "" {
+		form["ref"] = []string{strings.TrimSpace(cfg.GitRef)}
 	}
 
 	url := fmt.Sprintf("%s/projects/%s/statuses/%s", cfg.APIURL, repo, cfg.CommitHash)
