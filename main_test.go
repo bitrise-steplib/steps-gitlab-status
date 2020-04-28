@@ -23,6 +23,7 @@ func Test_getRepo(t *testing.T) {
 		{"ssh with scheme without port", "ssh://user@github.com/owner/repository.git", "owner/repository", false},
 		{"ssh with scheme without port, no user", "ssh://github.com/owner/repository.git", "owner/repository", false},
 		{"ssh with scheme with port", "ssh://user@github.com:22/owner/repository.git", "owner/repository", false},
+		{"ssh with scheme with mutilple path", "ssh://gitlab.company.com:category/project-name/subproject/finalname.git", "owner/repository", false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
