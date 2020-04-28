@@ -43,6 +43,15 @@ inputs:
       description: |-
         The URL for the repository we are working with
       is_required: true
+  - git_ref: "$BITRISE_GIT_BRANCH"
+    opts:
+      title: "The name of a repository branch or tag or, if not given, the default branch"
+      summary: ""
+      description: |-
+        The name of a repository branch or tag for which the status needs to be reported
+
+        In case of a same commit hash on multiple branches, _ref_  will be used so the pipeline status is updated on the correct branch.
+      is_required: true
   - commit_hash: "$BITRISE_GIT_COMMIT"
     opts:
       title: "Commit hash"

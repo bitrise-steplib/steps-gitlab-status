@@ -16,6 +16,7 @@ import (
 type config struct {
 	PrivateToken  string `env:"private_token,required"`
 	RepositoryURL string `env:"repository_url,required"`
+	GitRef        string `env:"git_ref"`
 	CommitHash    string `env:"commit_hash,required"`
 	APIURL        string `env:"api_base_url,required"`
 
@@ -62,6 +63,10 @@ func sendStatus(cfg config) error {
 		"description": {getDescription(cfg.Description, cfg.Status)},
 		"context":     {cfg.Context},
 		"coverage":    {fmt.Sprintf("%f", cfg.Coverage)},
+	}
+
+	if strings.TrimSpace(cfg.GitRef) != "" {
+		form["ref"] = []string{strings.TrimSpace(cfg.GitRef)}
 	}
 
 	url := fmt.Sprintf("%s/projects/%s/statuses/%s", cfg.APIURL, repo, cfg.CommitHash)

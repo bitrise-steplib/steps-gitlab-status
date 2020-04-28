@@ -3,10 +3,16 @@ default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 
 app:
   envs:
+  - MY_STEPLIB_REPO_FORK_GIT_URL: $MY_STEPLIB_REPO_FORK_GIT_URL
+  - ORIG_BITRISE_SOURCE_DIR: $BITRISE_SOURCE_DIR
+  
+  - GIT_REPOSITORY_URL_TEST: $GIT_REPOSITORY_URL_TEST
+  - GIT_COMMIT_TEST: "be6a506812974b4325c950f6d123a22199356371"
+
+  - GIT_COMMIT_ON_MULTIPLE_BRANCH: "4bacc2df80710da521443c337cc98855c2606911"
+  - GIT_NON_DEFAUTL_BRANCH_NAME_FOR_COMMIT: "same-commit-on-other-branch2"
   # define in .bitrise.secrets.yml
   - GITLAB_PRIVATE_TOKEN: $GITLAB_PRIVATE_TOKEN
-  - BITRISE_GIT_COMMIT_TEST: $BITRISE_GIT_COMMIT_TEST
-  - GIT_REPOSITORY_URL_TEST: $GIT_REPOSITORY_URL_TEST
 
 workflows:
   test:
@@ -21,6 +27,7 @@ workflows:
     - test_success
     - test_failed
     - test_no_commit_hash_wrapper
+    - test_commit_on_multiple_branches
 
   test_success:
     steps:
@@ -31,7 +38,7 @@ workflows:
         - api_base_url: "https://gitlab.com/api/v4"
         - private_token: "$GITLAB_PRIVATE_TOKEN"
         - repository_url: "$GIT_REPOSITORY_URL_TEST"
-        - commit_hash: "$BITRISE_GIT_COMMIT_TEST"
+        - commit_hash: $GIT_COMMIT_TEST
         - description: "Step test"
         - target_url: "https://bitrise.io"
 
@@ -44,7 +51,7 @@ workflows:
         - api_base_url: "https://gitlab.com/api/v4"
         - private_token: "$GITLAB_PRIVATE_TOKEN"
         - repository_url: "$GIT_REPOSITORY_URL_TEST"
-        - commit_hash: "$BITRISE_GIT_COMMIT_TEST"
+        - commit_hash: $GIT_COMMIT_TEST
         - description: "Step test"
         - target_url: "https://bitrise.io"
         - preset_status: failed
@@ -70,6 +77,19 @@ workflows:
         - private_token: "$GITLAB_PRIVATE_TOKEN"
         - repository_url: "$GIT_REPOSITORY_URL_TEST"
         - commit_hash:
+
+  test_commit_on_multiple_branches:
+    steps:
+    - path::./:
+        title: Test with commit hash that is present on multiple branches 
+        inputs:
+        - api_base_url: "https://gitlab.com/api/v4"
+        - private_token: "$GITLAB_PRIVATE_TOKEN"
+        - repository_url: "$GIT_REPOSITORY_URL_TEST"
+        - commit_hash: $GIT_COMMIT_ON_MULTIPLE_BRANCH
+        - git_ref: "same-commit-on-other-branch2"
+        - preset_status: success
+
 
   # ----------------------------------------------------------------
   # --- workflows to Share this step into a Step Library
