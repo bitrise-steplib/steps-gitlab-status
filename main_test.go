@@ -26,6 +26,7 @@ func Test_getRepo(t *testing.T) {
 		{"ssh with scheme without port", "ssh://user@github.com/owner/repository.git", "owner/repository", false},
 		{"ssh with scheme without port, no user", "ssh://github.com/owner/repository.git", "owner/repository", false},
 		{"ssh with scheme with port", "ssh://user@github.com:22/owner/repository.git", "owner/repository", false},
+		{"ssh with scheme with mutilple path", "ssh://gitlab.company.com:category/project-name/subproject/repository.git", "project-name/subproject/repository", false},
 		{"ssh with scheme with subgroups", "ssh://user@gitlab.com/group/subgroup/subsubgroup/repository.git", "group/subgroup/subsubgroup/repository", false},
 		{"ssh with scheme, invalid repo", "ssh://user@gitlab.com/repository.git", "", false},
 		{"ssh without scheme, invalid repo", "user@gitlab.com:repository.git", "", false},
