@@ -3,30 +3,32 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:cc12e8d1756854b6bd1a806e0e62f2e2ce1e275be1f1d67b5e80dc5321db5fba"
+  digest = "1:f85b79049eb586fbe5b92220b96476263ef52095669433c6fec277a97a86da75"
   name = "github.com/bitrise-io/go-utils"
   packages = [
     "colorstring",
     "log",
     "parseutil",
     "pointers",
+    "retry",
   ]
   pruneopts = "UT"
-  revision = "5067a2a682f21030f379f88e853b9e0734a24516"
+  revision = "0c47c16813a4209321c9d0dba2e75867d6901ff2"
 
 [[projects]]
   branch = "master"
-  digest = "1:65497df2301289c26765c4cf8fcd4709de190dd620ea822ae2dc67edfc598307"
+  digest = "1:caf5b6526ab478df1debb4048cc99489d3954975457c4ba63441f489c9053ea2"
   name = "github.com/bitrise-tools/go-steputils"
   packages = ["stepconf"]
   pruneopts = "UT"
-  revision = "3c98d95a94d51624a26e99419d0fc03d2aab0055"
+  revision = "6d5afa53c7b85b6135e382105116d245b5997ace"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
     "github.com/bitrise-io/go-utils/log",
+    "github.com/bitrise-io/go-utils/retry",
     "github.com/bitrise-tools/go-steputils/stepconf",
   ]
   solver-name = "gps-cdcl"

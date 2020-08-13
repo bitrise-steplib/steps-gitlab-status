@@ -8,8 +8,10 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/bitrise-io/go-utils/log"
+	"github.com/bitrise-io/go-utils/retry"
 	"github.com/bitrise-tools/go-steputils/stepconf"
 )
 
@@ -109,8 +111,14 @@ func main() {
 	}
 	stepconf.Print(cfg)
 
-	if err := sendStatus(cfg); err != nil {
-		log.Errorf("Error: %s\n", err)
+	if err := retry.Times(3).Wait(5 * time.Second).Try(func(attempt uint) error {
+		if attempt > 0 {
+			log.Warnf("%d attempt failed", attempt)
+		}
+
+		return sendStatus(cfg)
+	}); err != nil {
+		log.Errorf("Failed to set status, error: %s", err)
 		os.Exit(1)
 	}
 }
