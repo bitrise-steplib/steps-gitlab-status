@@ -11,10 +11,10 @@ description: |-
 4. You can also select a specific branch or tag to post the status to, but it's going to be sent to the default branch unless you change it.
 5. The **Commit hash** input is filled in by default with the variable inherited from the **Git Clone** Step.
 6. The **Target URL** Step input is the URL of the build, which is forwarded to GitHub as the source of the status.
-7. With the **Context** Step input, allows you to label the status with a name.
-8. The input **Set Specific Status** has a default value of `auto` which reflects the status of the build, but this input allows you to update the commit with any given status, regardless of the outcome of the build.
-9. 8. The **Description** input allows you to provide a short description for the status. 
-10.  Code **Coverage** percent can also be sent from the build to the commit. 
+7. The **Context** Step input, allows you to label the status with a name.
+8. The input **Set Specific Status** input has a default value of `auto` which reflects the status of the build, but this input allows you to update the commit with any given status, regardless of the outcome of the build.
+9. The **Description** input allows you to provide a short description for the status. 
+10. Code **Coverage** percent can also be sent from the build to the commit. 
  
 
   ### Troubleshooting
@@ -22,6 +22,7 @@ description: |-
   If you get a 404 response when running the Step, check your token's scope and validity.
   If you use GitHub Enterprise, make sure your API base URL is set to `https://gitlab.local.domain/api/v4`.
   If you do not see your status being reflected, double-check **Repository URL** and **Commit hash** input values. 
+  
   ### Useful links
  
   - [GitLab access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
