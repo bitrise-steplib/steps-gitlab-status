@@ -20,7 +20,7 @@ description: |-
   ### Troubleshooting
   
   If you get a 404 response when running the Step, check your token's scope and validity.
-  If you use GitHub Enterprise, make sure your API base URL is set to `https://gitlab.local.domain/api/v4`.
+  If you use GitLab Enterprise, make sure your API base URL is set to `https://gitlab.local.domain/api/v4`.
   If you do not see your status being reflected, double-check **Repository URL** and **Commit hash** input values. 
   
   ### Useful links
