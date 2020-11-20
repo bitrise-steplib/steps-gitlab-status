@@ -1,20 +1,20 @@
 title: GitLab Status
-summary: |- Update commit status for GitLab repositories.
+summary: Update commit status for GitLab repositories.
 description: |- 
   This Step updates the commit status for a GitLab repository (repo) of your choice with this build's status. Useful anytime you can not or do not want to provide Bitrise write access to your git repo.
   
   ### Configuring the Step
   
-1. The **GitLab API base URL** should be `https://gitlab.com/api/v4/` for cloud-hosted GitLabs. 
-2. In the **GitLab private token** Step input, you need to provide an access token you generated in your User Settings on GitLab.
-3. The **Repository URL** input is populated automatically with a variable the value of which is taken from the repository field of the Settings of your app.
-4. You can also select a specific branch or tag to post the status to, but it's going to be sent to the default branch unless you change it.
-5. The **Commit hash** input is filled in by default with the variable inherited from the **Git Clone** Step.
-6. The **Target URL** Step input is the URL of the build, which is forwarded to GitHub as the source of the status.
-7. The **Context** Step input, allows you to label the status with a name.
-8. The input **Set Specific Status** input has a default value of `auto` which reflects the status of the build, but this input allows you to update the commit with any given status, regardless of the outcome of the build.
-9. The **Description** input allows you to provide a short description for the status. 
-10. Code **Coverage** percent can also be sent from the build to the commit. 
+  1. The **GitLab API base URL** should be `https://gitlab.com/api/v4/` for cloud-hosted GitLabs. 
+  2. In the **GitLab private token** Step input, you need to provide an access token you generated in your User Settings on GitLab.
+  3. The **Repository URL** input is populated automatically with a variable the value of which is taken from the repository field of the Settings of your app.
+  4. You can also select a specific branch or tag to post the status to, but it's going to be sent to the default branch unless you change it.
+  5. The **Commit hash** input is filled in by default with the variable inherited from the **Git Clone** Step.
+  6. The **Target URL** Step input is the URL of the build, which is forwarded to GitHub as the source of the status.
+  7. The **Context** Step input, allows you to label the status with a name.
+  8. The input **Set Specific Status** input has a default value of `auto` which reflects the status of the build, but this input allows you to update the commit with any given status, regardless of the outcome of the build.
+  9. The **Description** input allows you to provide a short description for the status. 
+  10. Code **Coverage** percent can also be sent from the build to the commit. 
  
 
   ### Troubleshooting
@@ -31,6 +31,7 @@ description: |-
  
   - [Git-Clone](https://www.bitrise.io/integrations/steps/git-clone)
   - [Build Status Change](https://www.bitrise.io/integrations/steps/build-status-change)
+  
 website: https://github.com/bitrise-steplib/steps-gitlab-status
 source_code_url: https://github.com/bitrise-steplib/steps-gitlab-status
 support_url: https://github.com/bitrise-steplib/steps-gitlab-status/issues
