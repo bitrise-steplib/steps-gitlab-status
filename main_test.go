@@ -1,7 +1,10 @@
 package main
 
 import (
+	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_getRepo(t *testing.T) {
@@ -35,6 +38,86 @@ func Test_getRepo(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := getRepo(tt.url); got != tt.want {
 				t.Errorf("getRepo() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_parseConfig(t *testing.T) {
+	testCases := []struct {
+		desc             string
+		envVars          map[string]string
+		expectedError    error
+		expectedCoverage float64
+	}{
+		{
+			desc: "when config can be parsed",
+			envVars: map[string]string{
+				"coverage":       "0.1",
+				"private_token":  "asd123",
+				"repository_url": "http://repo.url",
+				"commit_hash":    "aaa111",
+				"api_base_url":   "http://api.baseurl",
+				"preset_status":  "success",
+			},
+			expectedError:    nil,
+			expectedCoverage: 0.1,
+		},
+		{
+			desc: "when coverage status field has an extra dot character, it removes the extra and succeed",
+			envVars: map[string]string{
+				"coverage":       "0.1.",
+				"private_token":  "asd123",
+				"repository_url": "http://repo.url",
+				"commit_hash":    "aaa111",
+				"api_base_url":   "http://api.baseurl",
+				"preset_status":  "success",
+			},
+			expectedError:    nil,
+			expectedCoverage: 0.1,
+		},
+		{
+			desc: "when coverage status field has an extra whitespace character, it removes the extra and succeed",
+			envVars: map[string]string{
+				"coverage":       "0.1      ",
+				"private_token":  "asd123",
+				"repository_url": "http://repo.url",
+				"commit_hash":    "aaa111",
+				"api_base_url":   "http://api.baseurl",
+				"preset_status":  "success",
+			},
+			expectedError:    nil,
+			expectedCoverage: 0.1,
+		},
+		{
+			desc: "when coverage status field has extra characters, it removes the extra and succeed",
+			envVars: map[string]string{
+				"coverage":       "0.1asdsdasdf34,asd.eerv5.3",
+				"private_token":  "asd123",
+				"repository_url": "http://repo.url",
+				"commit_hash":    "aaa111",
+				"api_base_url":   "http://api.baseurl",
+				"preset_status":  "success",
+			},
+			expectedError:    nil,
+			expectedCoverage: 0.1,
+		},
+	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			// set up
+			for k, v := range tC.envVars {
+				os.Setenv(k, v)
+			}
+
+			conf, err := fixAndParseConfig()
+
+			assert.Equal(t, tC.expectedError, err)
+			assert.Equal(t, tC.expectedCoverage, conf.Coverage)
+
+			// tear down
+			for k := range tC.envVars {
+				os.Setenv(k, "")
 			}
 		})
 	}

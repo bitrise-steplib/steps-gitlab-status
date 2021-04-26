@@ -98,14 +98,37 @@ func sendStatus(cfg config) error {
 	return err
 }
 
+func fixAndParseConfig() (config, error) {
+	fixCoverageField()
+
+	var cfg config
+	if err := stepconf.Parse(&cfg); err != nil {
+		return cfg, err
+	}
+
+	return cfg, nil
+}
+
+func fixCoverageField() {
+	coverageValue := os.Getenv("coverage")
+
+	coverageValue = strings.TrimSpace(coverageValue)
+
+	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
+	parsed := re.FindAllString(coverageValue, -1)
+	coverageValue = parsed[0]
+
+	os.Setenv("coverage", coverageValue)
+}
+
 func main() {
 	if os.Getenv("commit_hash") == "" {
 		log.Warnf("GitLab requires a commit hash for build status reporting")
 		os.Exit(1)
 	}
 
-	var cfg config
-	if err := stepconf.Parse(&cfg); err != nil {
+	cfg, err := fixAndParseConfig()
+	if err != nil {
 		log.Errorf("Error: %s\n", err)
 		os.Exit(1)
 	}
