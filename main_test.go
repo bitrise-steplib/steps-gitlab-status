@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -107,7 +108,11 @@ func Test_parseConfig(t *testing.T) {
 		t.Run(tC.desc, func(t *testing.T) {
 			// set up
 			for k, v := range tC.envVars {
-				os.Setenv(k, v)
+				err := os.Setenv(k, v)
+
+				if err != nil {
+					panic(fmt.Sprintf("Failed to set env. var.: %s", k))
+				}
 			}
 
 			conf, err := fixAndParseConfig()
@@ -117,7 +122,10 @@ func Test_parseConfig(t *testing.T) {
 
 			// tear down
 			for k := range tC.envVars {
-				os.Setenv(k, "")
+				err := os.Setenv(k, "")
+				if err != nil {
+					panic(fmt.Sprintf("Failed to set env. var.: %s", k))
+				}
 			}
 		})
 	}

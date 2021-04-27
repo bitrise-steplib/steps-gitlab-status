@@ -99,17 +99,17 @@ func sendStatus(cfg config) error {
 }
 
 func fixAndParseConfig() (config, error) {
-	fixCoverageField()
+	err := fixCoverageField()
 
 	var cfg config
 	if err := stepconf.Parse(&cfg); err != nil {
 		return cfg, err
 	}
 
-	return cfg, nil
+	return cfg, err
 }
 
-func fixCoverageField() {
+func fixCoverageField() error {
 	coverageValue := os.Getenv("coverage")
 
 	coverageValue = strings.TrimSpace(coverageValue)
@@ -118,7 +118,7 @@ func fixCoverageField() {
 	parsed := re.FindAllString(coverageValue, -1)
 	coverageValue = parsed[0]
 
-	os.Setenv("coverage", coverageValue)
+	return os.Setenv("coverage", coverageValue)
 }
 
 func main() {
