@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -99,45 +98,14 @@ func sendStatus(cfg config) error {
 	return err
 }
 
-func fixAndParseConfig() (config, error) {
-	err := fixCoverageField()
-
-	var cfg config
-	if err := stepconf.Parse(&cfg); err != nil {
-		return cfg, err
-	}
-
-	return cfg, err
-}
-
-func fixCoverageField() error {
-	coverageValue := os.Getenv("coverage")
-
-	coverageValue = strings.TrimSpace(coverageValue)
-	if len(coverageValue) == 0 {
-		return nil
-	}
-
-	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
-	parsed := re.FindAllString(coverageValue, -1)
-
-	if len(parsed) == 0 {
-		return errors.New("invalid coverage format")
-	}
-
-	coverageValue = parsed[0]
-
-	return os.Setenv("coverage", coverageValue)
-}
-
 func main() {
 	if os.Getenv("commit_hash") == "" {
 		log.Warnf("GitLab requires a commit hash for build status reporting")
 		os.Exit(1)
 	}
 
-	cfg, err := fixAndParseConfig()
-	if err != nil {
+	var cfg config
+	if err := stepconf.Parse(&cfg); err != nil {
 		log.Errorf("Error: %s\n", err)
 		os.Exit(1)
 	}
