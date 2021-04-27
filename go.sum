@@ -1,9 +1,7 @@
-github.com/bitrise-io/go-steputils v0.0.0-20210324082442-21a1b8f2b237 h1:pf2j3cJjJ2gwMOED21U8QbIu3xg3+k3Th3HkVK8MwkY=
-github.com/bitrise-io/go-steputils v0.0.0-20210324082442-21a1b8f2b237/go.mod h1:Z/Vll330H6Ws7INi8bpUNpWP0+N+dLSN4d0Fnc+j5B0=
+github.com/bitrise-io/go-steputils v0.0.0-20210427122217-78cb7d8e4ed1 h1:aw7vZY4K4GCdbVBMWHg7aEsbODPCo3McCyDJaHjrvO0=
+github.com/bitrise-io/go-steputils v0.0.0-20210427122217-78cb7d8e4ed1/go.mod h1:Z/Vll330H6Ws7INi8bpUNpWP0+N+dLSN4d0Fnc+j5B0=
 github.com/bitrise-io/go-utils v0.0.0-20200629150542-0c47c16813a4 h1:dJA9tN+sygrsTstfYM76QRknWwKcvA0icshabL5FDSk=
 github.com/bitrise-io/go-utils v0.0.0-20200629150542-0c47c16813a4/go.mod h1:tTEsKvbz1LbzuN/KpVFHXnLtcAPdEgIdM41s0lL407s=
-github.com/bitrise-tools/go-steputils v0.0.0-20200722085210-6d5afa53c7b8 h1:oibSF124WX7LBQ0bqe1TznOtAu3g/ZIJmRXFFHpZBfM=
-github.com/bitrise-tools/go-steputils v0.0.0-20200722085210-6d5afa53c7b8/go.mod h1:4eEx1Bd2AAVAN/YGK4V066jO7ekrsLymkyQZzx2UEwQ=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
