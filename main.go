@@ -114,6 +114,10 @@ func fixCoverageField() error {
 
 	coverageValue = strings.TrimSpace(coverageValue)
 
+	if len(coverageValue) == 0 {
+		return nil
+	}
+
 	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
 	parsed := re.FindAllString(coverageValue, -1)
 	coverageValue = parsed[0]

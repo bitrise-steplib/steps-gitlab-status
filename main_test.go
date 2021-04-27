@@ -103,6 +103,19 @@ func Test_parseConfig(t *testing.T) {
 			expectedError:    nil,
 			expectedCoverage: 0.1,
 		},
+		{
+			desc: "when coverage status field is empty, it will not pre-parse the value",
+			envVars: map[string]string{
+				"coverage":       "",
+				"private_token":  "asd123",
+				"repository_url": "http://repo.url",
+				"commit_hash":    "aaa111",
+				"api_base_url":   "http://api.baseurl",
+				"preset_status":  "success",
+			},
+			expectedError:    nil,
+			expectedCoverage: 0,
+		},
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {

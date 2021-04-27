@@ -12,18 +12,10 @@ github.com/bitrise-io/go-utils/retry
 github.com/bitrise-tools/go-steputils/stepconf
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
-# github.com/kisielk/errcheck v1.6.0
-## explicit
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
 # github.com/stretchr/testify v1.7.0
 ## explicit
 github.com/stretchr/testify/assert
-# golang.org/x/mod v0.4.2
-## explicit
-# golang.org/x/sys v0.0.0-20210426230700-d19ff857e887
-## explicit
-# golang.org/x/tools v0.1.0
-## explicit
 # gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
 gopkg.in/yaml.v3
