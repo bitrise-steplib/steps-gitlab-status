@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -113,13 +114,17 @@ func fixCoverageField() error {
 	coverageValue := os.Getenv("coverage")
 
 	coverageValue = strings.TrimSpace(coverageValue)
+	if len(coverageValue) == 0 {
+		return nil
+	}
 
 	re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
 	parsed := re.FindAllString(coverageValue, -1)
 
 	if len(parsed) == 0 {
-		return nil
+		return errors.New("invalid coverage format")
 	}
+
 	coverageValue = parsed[0]
 
 	return os.Setenv("coverage", coverageValue)
