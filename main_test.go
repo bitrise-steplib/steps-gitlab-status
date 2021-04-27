@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"testing"
@@ -115,19 +114,6 @@ func Test_parseConfig(t *testing.T) {
 				"preset_status":  "success",
 			},
 			expectedError:    nil,
-			expectedCoverage: 0,
-		},
-		{
-			desc: "when coverage field has an invalid format, it throws an exception",
-			envVars: map[string]string{
-				"coverage":       "asdasd",
-				"private_token":  "asd123",
-				"repository_url": "http://repo.url",
-				"commit_hash":    "aaa111",
-				"api_base_url":   "http://api.baseurl",
-				"preset_status":  "success",
-			},
-			expectedError:    errors.New("failed to parse config:\n- Coverage: asdasd: failed to parse value asdasd: value asdasd is could not be parsed\n\n\x1b[34;1mConfig:\n\x1b[0m- PrivateToken: asd123\n- RepositoryURL: http://repo.url\n- GitRef: \n- CommitHash: aaa111\n- APIURL: http://api.baseurl\n- Status: success\n- TargetURL: \n- Context: \n- Description: \n- Coverage: 0\n"),
 			expectedCoverage: 0,
 		},
 	}
