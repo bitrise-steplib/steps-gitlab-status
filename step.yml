@@ -6,7 +6,7 @@ description: |-
   ### Configuring the Step
   
   1. The **GitLab API base URL** should be `https://gitlab.com/api/v4/` for cloud-hosted GitLabs. 
-  2. In the **GitLab private token** Step input, you need to provide an access token you generated in your User Settings on GitLab.
+  2. In the **GitLab private token** Step input, you need to provide an access token you generated in your User Settings on GitLab. Go to "Preferences" -> "Access Tokens" -> "Add new token" -> Give it a name, set expiration date and choose **api** and **read_api** scopes.
   3. The **Repository URL** input is populated automatically with a variable the value of which is taken from the repository field of the Settings of your app.
   4. You can also select a specific branch or tag to post the status to, but it's going to be sent to the default branch unless you change it.
   5. The **Commit hash** input is filled in by default with the variable inherited from the **Git Clone** Step.
