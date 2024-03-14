@@ -6,7 +6,7 @@ description: |-
   ### Configuring the Step
   
   1. The **GitLab API base URL** should be `https://gitlab.com/api/v4/` for cloud-hosted GitLabs. 
-  2. In the **GitLab private token** Step input, you need to provide an access token you generated in your User Settings on GitLab.
+  2. In the **GitLab private token** Step input, you need to provide an access token you generated in your Project Settings or User Settings on GitLab.
   3. The **Repository URL** input is populated automatically with a variable the value of which is taken from the repository field of the Settings of your app.
   4. You can also select a specific branch or tag to post the status to, but it's going to be sent to the default branch unless you change it.
   5. The **Commit hash** input is filled in by default with the variable inherited from the **Git Clone** Step.
@@ -25,7 +25,8 @@ description: |-
   
   ### Useful links
  
-  - [GitLab access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+  - [Gitlab project access tokens](https://docs.gitlab.com/ee/user/project/settings/project_access_tokens.html)
+  - [GitLab personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
  
   ### Related Steps
  
@@ -60,7 +61,13 @@ inputs:
       description: |-
         Authorization token for GitLab applications
 
-        Generating a personal access token:
+        Generating a project access token:
+        1. Log in to your GitLab instance.
+        2. Go to Project -> Settings > Access Tokens.
+        3. Pick a _name_ and set a _scope_ for the token.
+        4. Click on **Add new token** and save your new token.
+
+        Alternatively generating a personal access token:
         1. Log in to your GitLab instance.
         2. Go to User Settings > Access Tokens.
         3. Pick a _name_ and set a _scope_ for the token.
