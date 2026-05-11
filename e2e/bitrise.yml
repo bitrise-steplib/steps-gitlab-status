@@ -1,0 +1,75 @@
+format_version: "11"
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+app:
+  envs:
+  - GITLAB_API_BASE_URL: https://gitlab.com/api/v4
+  - GIT_REPOSITORY_URL_TEST: https://gitlab.com/bitrise/git-clone-test.git
+  - GIT_COMMIT_TEST: be6a506812974b4325c950f6d123a22199356371
+  - GIT_COMMIT_ON_MULTIPLE_BRANCH: 4bacc2df80710da521443c337cc98855c2606911
+  - GIT_NON_DEFAULT_BRANCH_NAME_FOR_COMMIT: same-commit-on-other-branch2
+  # Secret env vars have matching key and value
+  - GITLAB_TOKEN: $GITLAB_TOKEN
+
+workflows:
+  test_success:
+    steps:
+    - path::./:
+        title: Test success status
+        is_skippable: false
+        inputs:
+        - api_base_url: $GITLAB_API_BASE_URL
+        - private_token: $GITLAB_TOKEN
+        - repository_url: $GIT_REPOSITORY_URL_TEST
+        - commit_hash: $GIT_COMMIT_TEST
+        - description: Step test
+        - target_url: https://bitrise.io
+
+  test_failed:
+    steps:
+    - path::./:
+        title: Test failed status
+        is_skippable: false
+        inputs:
+        - api_base_url: $GITLAB_API_BASE_URL
+        - private_token: $GITLAB_TOKEN
+        - repository_url: $GIT_REPOSITORY_URL_TEST
+        - commit_hash: $GIT_COMMIT_TEST
+        - description: Step test
+        - target_url: https://bitrise.io
+        - preset_status: failed
+
+  test_no_commit_hash:
+    steps:
+    - script:
+        title: Expect the Step to fail when no commit hash is provided
+        inputs:
+        - content: |-
+            #!/bin/env bash
+            bitrise run --config ./e2e/bitrise.yml utility_no_commit_hash
+            if [ $? != 1 ]; then
+              exit 1
+            fi
+
+  utility_no_commit_hash:
+    steps:
+    - path::./:
+        title: Test no commit hash specified
+        is_skippable: false
+        inputs:
+        - api_base_url: $GITLAB_API_BASE_URL
+        - private_token: $GITLAB_TOKEN
+        - repository_url: $GIT_REPOSITORY_URL_TEST
+        - commit_hash:
+
+  test_commit_on_multiple_branches:
+    steps:
+    - path::./:
+        title: Test with commit hash that is present on multiple branches
+        inputs:
+        - api_base_url: $GITLAB_API_BASE_URL
+        - private_token: $GITLAB_TOKEN
+        - repository_url: $GIT_REPOSITORY_URL_TEST
+        - commit_hash: $GIT_COMMIT_ON_MULTIPLE_BRANCH
+        - git_ref: $GIT_NON_DEFAULT_BRANCH_NAME_FOR_COMMIT
+        - preset_status: success
