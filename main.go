@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -50,7 +50,7 @@ func getState(preset string) string {
 
 func getDescription(desc, state string) string {
 	if desc == "" {
-		return strings.Title(getState(state))
+		return strings.Title(getState(state)) //nolint:staticcheck // SA1019: strings.Title is fine for ASCII state names
 	}
 	return desc
 }
@@ -84,7 +84,7 @@ func sendStatus(cfg config) error {
 		return fmt.Errorf("failed to send the request: %s", err)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
