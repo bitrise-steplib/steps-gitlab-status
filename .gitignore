@@ -1,3 +1,6 @@
 .bitrise*
 _tmp
 .idea
+bin/
+README.md.backup
+.DS_Store
