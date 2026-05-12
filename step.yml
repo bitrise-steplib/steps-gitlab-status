@@ -24,8 +24,8 @@ description: |-
 
   ### Useful links
 
-  - [GitLab project access tokens](https://docs.gitlab.com/ee/user/project/settings/project_access_tokens.html)
-  - [GitLab personal access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+  - [GitLab project access tokens](https://docs.gitlab.com/user/project/settings/project_access_tokens/)
+  - [GitLab personal access tokens](https://docs.gitlab.com/user/profile/personal_access_tokens/)
 
   ### Related Steps
 
