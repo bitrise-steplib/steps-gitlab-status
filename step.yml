@@ -24,8 +24,8 @@ description: |-
 
   ### Useful links
 
-  - [GitLab project access tokens](https://docs.gitlab.com/user/project/settings/project_access_tokens/)
-  - [GitLab personal access tokens](https://docs.gitlab.com/user/profile/personal_access_tokens/)
+  - [GitLab project access tokens](https://docs.gitlab.com/user/project/settings/project_access_tokens/#create-a-project-access-token)
+  - [GitLab personal access tokens](https://docs.gitlab.com/user/profile/personal_access_tokens/#create-a-personal-access-token)
 
   ### Related Steps
 
@@ -58,17 +58,24 @@ inputs:
     description: |-
       Authorization token for GitLab applications
 
-      Generating a project access token:
+      Generating a [project access token](https://docs.gitlab.com/user/project/settings/project_access_tokens/#create-a-project-access-token):
       1. Log in to your GitLab instance.
-      2. Go to Project -> Settings > Access Tokens.
-      3. Pick a _name_ and set a _scope_ for the token.
-      4. Click on **Add new token** and save your new token.
+      1. Go to **Project -> Settings > Access Tokens**.
+      1. Select **Add new token**.
+      1. In **Token name**, enter a name.
+      1. Select a role for the token.
+      1. Select **scope** *api* and *read_api*.
+      1. Select **Create project access token**.
 
-      Alternatively generating a personal access token:
+      Alternatively generating a [personal access tokens](https://docs.gitlab.com/user/profile/personal_access_tokens/#create-a-personal-access-token):
       1. Log in to your GitLab instance.
-      2. Go to User Settings > Access Tokens.
-      3. Pick a _name_ and set a _scope_ for the token.
-      4. Click on **Create personal access token** and save your new token.
+      1. In the upper-right corner, select your avatar. Select **Edit profile**.
+      1. In the left sidebar, select **Access > Personal access tokens**.
+      1. From the **Generate token** dropdown list, select **Legacy token**.
+      1. In **Token name**, enter a name for the token.
+      1. In **Expiration date**, enter an expiry date for the token
+      1. Select **scope** *api* and *read_api*.
+      1. Select **Generate token**.
     is_required: true
     is_sensitive: true
 - repository_url: $GIT_REPOSITORY_URL

@@ -12,7 +12,7 @@ This Step updates the commit status for a GitLab repository (repo) of your choic
 ### Configuring the Step
 
 1. The **GitLab API base URL** should be `https://gitlab.com/api/v4/` for cloud-hosted GitLabs.
-2. In the **GitLab private token** Step input, you need to provide an access token you generated in your User Settings on GitLab.
+2. In the **GitLab private token** Step input, you need to provide an access token you generated in your Project Settings or User Settings on GitLab.
 3. The **Repository URL** input is populated automatically with a variable the value of which is taken from the repository field of the Settings of your app.
 4. You can also select a specific branch or tag to post the status to, but it's going to be sent to the default branch unless you change it.
 5. The **Commit hash** input is filled in by default with the variable inherited from the **Git Clone** Step.
@@ -30,7 +30,8 @@ If you do not see your status being reflected, double-check **Repository URL** a
 
 ### Useful links
 
-- [GitLab access tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+- [GitLab project access tokens](https://docs.gitlab.com/user/project/settings/project_access_tokens/#create-a-project-access-token)
+- [GitLab personal access tokens](https://docs.gitlab.com/user/profile/personal_access_tokens/#create-a-personal-access-token)
 
 ### Related Steps
 
@@ -52,7 +53,7 @@ You can also run this step directly with [Bitrise CLI](https://github.com/bitris
 | Key | Description | Flags | Default |
 | --- | --- | --- | --- |
 | `api_base_url` | API URL for GitLab or GitLab Enterprise  Example: "https://gitlab.example.com/api/v4" | required |  |
-| `private_token` | Authorization token for GitLab applications  Generating a personal access token: 1. Log in to your GitLab instance. 2. Go to User Settings > Access Tokens. 3. Pick a _name_ and set a _scope_ for the token. 4. Click on **Create personal access token** and save your new token. | required, sensitive |  |
+| `private_token` | Authorization token for GitLab applications  Generating a [project access token](https://docs.gitlab.com/user/project/settings/project_access_tokens/#create-a-project-access-token): 1. Log in to your GitLab instance. 1. Go to **Project -> Settings > Access Tokens**. 1. Select **Add new token**. 1. In **Token name**, enter a name. 1. Select a role for the token. 1. Select **scope** *api* and *read_api*. 1. Select **Create project access token**.  Alternatively generating a [personal access tokens](https://docs.gitlab.com/user/profile/personal_access_tokens/#create-a-personal-access-token): 1. Log in to your GitLab instance. 1. In the upper-right corner, select your avatar. Select **Edit profile**. 1. In the left sidebar, select **Access > Personal access tokens**. 1. From the **Generate token** dropdown list, select **Legacy token**. 1. In **Token name**, enter a name for the token. 1. In **Expiration date**, enter an expiry date for the token 1. Select **scope** *api* and *read_api*. 1. Select **Generate token**. | required, sensitive |  |
 | `repository_url` | The URL for the repository we are working with | required | `$GIT_REPOSITORY_URL` |
 | `git_ref` | The name of a repository branch or tag for which the status needs to be reported  In case of a same commit hash on multiple branches, _ref_  will be used so the pipeline status is updated on the correct branch. | required | `$BITRISE_GIT_BRANCH` |
 | `commit_hash` | The commit hash for the commit we are working with | required | `$BITRISE_GIT_COMMIT` |
